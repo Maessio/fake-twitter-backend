@@ -2,6 +2,7 @@ package com.app.faketwitter.config;
 
 import com.app.faketwitter.model.User;
 import com.app.faketwitter.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

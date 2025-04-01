@@ -1,9 +1,15 @@
 package com.app.faketwitter.controller;
 
-import com.app.faketwitter.model.User;
-import com.app.faketwitter.service.UserService;
+import com.app.faketwitter.dto.LoginRequestDTO;
+import com.app.faketwitter.dto.RegisterRequestDTO;
+import com.app.faketwitter.response.ApiResponse;
+import com.app.faketwitter.service.LoginService;
+import com.app.faketwitter.service.RegisterService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,22 +17,35 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     @Autowired
-    private UserService userService;
+    private LoginService loginService;
 
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
+    @Autowired
+    private RegisterService registerService;
 
-        userService.registerUser(user.getEmail(), user.getPassword());
+    @PostMapping(value = "/register", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody RegisterRequestDTO registerRequestDTO, BindingResult bindingResult) {
 
-        return ResponseEntity.ok("User registered successfully");
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder("Validation failed: ");
+            bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append(", "));
+
+            return ResponseEntity.badRequest().body(ApiResponse.error(400, errorMessage.toString()));
+        }
+
+        registerService.registerUser(registerRequestDTO.getUsername(), registerRequestDTO.getEmail(), registerRequestDTO.getPassword());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(201, "User registered successfully", null));
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody User user) {
+    @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<ApiResponse> loginUser(@RequestBody LoginRequestDTO loginRequestDTO) {
 
-        userService.registerUser(user.getEmail(), user.getPassword());
-
-        return ResponseEntity.ok("Login successful");
+        try {
+            String jwtToken = loginService.login(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
+            return ResponseEntity.ok(ApiResponse.success(200, "Login successful, token: " + jwtToken, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(500, "Invalid credentials"));
+        }
     }
 }
 

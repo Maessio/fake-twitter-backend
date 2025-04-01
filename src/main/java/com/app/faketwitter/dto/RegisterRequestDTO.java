@@ -1,29 +1,25 @@
-package com.app.faketwitter.model;
+package com.app.faketwitter.dto;
 
+import com.app.faketwitter.model.Post;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
 import java.util.List;
-import java.util.Set;
 
-@Entity
-@Table(name = "users")
-public class User {
+@Data
+public class RegisterRequestDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @NotBlank(message = "Username is mandatory")
     private String username;
+
+    @NotBlank(message = "Email is mandatory")
+    @Email
     private String email;
+
+    @NotBlank(message = "Password is mandatory")
     private String password;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Post> posts;
-
-    @ManyToMany
-    private Set<User> following;
-
-    @ManyToMany(mappedBy = "following")
-    private Set<User> followers;
 
     public String getUsername() {
         return username;
@@ -48,4 +44,6 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+
 }

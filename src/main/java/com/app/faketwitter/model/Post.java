@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Post {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Follow {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

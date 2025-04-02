@@ -1,9 +1,11 @@
 package com.app.faketwitter.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL) // Excludes null fields from serialization
 public class ApiResponse {
 
     @JsonProperty("statusCode")

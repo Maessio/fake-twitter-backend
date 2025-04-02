@@ -2,11 +2,9 @@ package com.app.faketwitter.controller;
 
 import com.app.faketwitter.dto.PostDTO;
 import com.app.faketwitter.dto.UserDTO;
-import com.app.faketwitter.model.User;
 import com.app.faketwitter.request.CreatePostRequest;
 import com.app.faketwitter.response.ApiResponse;
 import com.app.faketwitter.service.UserService;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

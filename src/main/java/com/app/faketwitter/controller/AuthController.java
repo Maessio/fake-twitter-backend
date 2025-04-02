@@ -42,7 +42,7 @@ public class AuthController {
     public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
 
         try {
-            registerService.registerUser(data.userName(), data.email(), data.password());
+            registerService.registerUser(data.username(), data.email(), data.password());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(201, "User registered successfully", null));
         } catch (IllegalArgumentException e) {
@@ -65,17 +65,15 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/logout/{userId}")
+    public ResponseEntity<ApiResponse> logout(HttpServletRequest request) throws Exception {
 
+        if (loginService.logout(request)){
 
-    @PostMapping(value = "/logout", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<ApiResponse> logout(@RequestHeader(value = "Authorization", required = false) HttpServletRequest authorizationHeader) {
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(200, "Logout successful", null));
+        } else {
 
-        try {
-//            loginService.logout();
-
-            return ResponseEntity.ok(ApiResponse.success(200, "Logout successful ", null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(500, "Internal Server Error"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(400, "Invalid credentials"));
         }
     }
 
@@ -87,7 +85,7 @@ public class AuthController {
             loginService.changePassword(userId, changePasswordDTO.getOldPassword(), changePasswordDTO.getNewPassword());
             return ResponseEntity.ok(ApiResponse.success(200, "Password changed successfully ", null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(500, "Internal Server Error"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(400, "Invalid credentials"));
         }
     }
 }

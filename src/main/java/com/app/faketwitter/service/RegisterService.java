@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class RegisterService {
 
@@ -18,9 +20,9 @@ public class RegisterService {
     private BCryptPasswordEncoder passwordEncoder;
 
     public boolean emailExists(String email) {
-        UserDetails userDetails = userRepository.findByEmail(email);
+        UserDetails user = userRepository.findByEmail(email);
 
-        return userDetails != null;
+        return user != null;
     }
 
     @Transactional

@@ -1,8 +1,8 @@
-package com.app.faketwitter.dto;
+package com.app.faketwitter.request;
 
 import jakarta.validation.constraints.NotBlank;
 
-public class LogoutRequestDTO {
+public class LogoutRequest {
 
     @NotBlank(message = "Token is mandatory")
     private String token;

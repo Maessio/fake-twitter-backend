@@ -1,15 +1,9 @@
 package com.app.faketwitter.dto;
 
-import com.app.faketwitter.model.Post;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
 
-import java.util.List;
-
-@Data
-public class RegisterRequestDTO {
+public class RegisterRequest {
 
     @NotBlank(message = "Username is mandatory")
     private String username;
@@ -21,6 +15,8 @@ public class RegisterRequestDTO {
     @NotBlank(message = "Password is mandatory")
     private String password;
 
+
+    // Getters and Setters
     public String getUsername() {
         return username;
     }

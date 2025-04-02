@@ -12,6 +12,7 @@ public class ApiResponse {
     @JsonProperty("message")
     private final String message;
 
+    @JsonProperty("data")
     private final Object data;
 
     //Constructor

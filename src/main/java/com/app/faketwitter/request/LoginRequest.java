@@ -1,17 +1,16 @@
-package com.app.faketwitter.dto;
+package com.app.faketwitter.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
 
 
-public class LoginRequestDTO {
+public class LoginRequest {
 
-    @NotBlank
+    @NotBlank(message = "Email is mandatory")
     @Email
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Password is mandatory")
     private String password;
 
     // Getter and Setters

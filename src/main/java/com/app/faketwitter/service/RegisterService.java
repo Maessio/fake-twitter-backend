@@ -18,13 +18,24 @@ public class RegisterService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    public boolean emailExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
     @Transactional
     public User registerUser(String username, String email, String password) {
+        if (emailExists(email)) {
+            throw new IllegalArgumentException("Email already in use");
+        }
 
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
-        user.setPassword(new BCryptPasswordEncoder().encode(password));
+        user.setPassword(passwordEncoder.encode(password));
+
         return userRepository.save(user);
     }
 

@@ -10,14 +10,19 @@ public class UserDTO {
     private Long id;
     private String userName;
     private String email;
+    private int followersCount;
+    private int followingCount;
     private List<PostDTO> posts;
 
     // Constructor
-    public UserDTO(Long id, String userName, String email, List<PostDTO> postDTO) {
+
+    public UserDTO(Long id, String userName, String email, int followersCount, int followingCount, List<PostDTO> posts) {
         this.id = id;
         this.userName = userName;
         this.email = email;
-        this.posts = postDTO;
+        this.followersCount = followersCount;
+        this.followingCount = followingCount;
+        this.posts = posts;
     }
 
     public UserDTO(Long id, String userName, String email) {
@@ -51,11 +56,27 @@ public class UserDTO {
         this.email = email;
     }
 
-    public List<PostDTO> getPostDTO() {
+    public int getFollowersCount() {
+        return followersCount;
+    }
+
+    public void setFollowersCount(int followersCount) {
+        this.followersCount = followersCount;
+    }
+
+    public int getFollowingCount() {
+        return followingCount;
+    }
+
+    public void setFollowingCount(int followingCount) {
+        this.followingCount = followingCount;
+    }
+
+    public List<PostDTO> getPosts() {
         return posts;
     }
 
-    public void setPostDTO(List<PostDTO> postDTO) {
+    public void setPosts(List<PostDTO> postDTO) {
         this.posts = postDTO;
     }
 }

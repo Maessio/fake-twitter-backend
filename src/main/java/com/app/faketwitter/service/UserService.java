@@ -6,6 +6,9 @@ import com.app.faketwitter.model.Post;
 import com.app.faketwitter.model.User;
 import com.app.faketwitter.repository.PostRepository;
 import com.app.faketwitter.repository.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,10 +25,15 @@ public class UserService {
     @Autowired
     private PostRepository postRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public UserDTO getUserProfile(Long userId) throws Exception {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new Exception("User not found"));
+
+        int followersCount = getFollowersCount(userId);
+        int followingCount = getFollowingCount(userId);
 
         List<Post> posts = postRepository.findByUser(user);
 
@@ -33,7 +41,7 @@ public class UserService {
                 .map(post -> new PostDTO(post.getContent(), post.getUser().getUsername()))
                 .collect(Collectors.toList());
 
-        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), postDTOs);
+        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), followersCount, followingCount, postDTOs);
     }
 
     @Transactional
@@ -80,6 +88,20 @@ public class UserService {
         return users.stream()
                 .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getEmail()))
                 .collect(Collectors.toList());
+    }
+
+    private int getFollowersCount(Long userId) {
+        String qlString = "SELECT COUNT(u) FROM User u JOIN u.following f WHERE f.id = :userId";
+        TypedQuery<Long> query = entityManager.createQuery(qlString, Long.class);
+        query.setParameter("userId", userId);
+        return query.getSingleResult().intValue();
+    }
+
+    private int getFollowingCount(Long userId) {
+        String qlString = "SELECT COUNT(f) FROM User u JOIN u.following f WHERE u.id = :userId";
+        TypedQuery<Long> query = entityManager.createQuery(qlString, Long.class);
+        query.setParameter("userId", userId);
+        return query.getSingleResult().intValue();
     }
 
 }

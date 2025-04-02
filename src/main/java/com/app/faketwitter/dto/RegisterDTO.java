@@ -1,4 +1,4 @@
 package com.app.faketwitter.dto;
 
-public record RegisterDTO(String userName, String email, String password) {
+public record RegisterDTO(String username, String email, String password) {
 }

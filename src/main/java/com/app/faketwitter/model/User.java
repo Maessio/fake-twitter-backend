@@ -1,6 +1,7 @@
 package com.app.faketwitter.model;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,6 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
+@NoArgsConstructor
 public class User implements UserDetails {
 
     @Id
@@ -29,15 +31,15 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "following")
     private Set<User> followers;
 
-    public User() {
-    }
 
+    // Constructor
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -95,6 +97,7 @@ public class User implements UserDetails {
         this.followers = followers;
     }
 
+    //Methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

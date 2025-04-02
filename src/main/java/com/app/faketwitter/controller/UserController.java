@@ -22,11 +22,13 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<ApiResponse> getUserProfile(@PathVariable Long userId) {
+
         try {
             UserDTO user = userService.getUserProfile(userId);
+
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(200, "Profile found", user));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(500, "Internal Server Error"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(404, "User not found"));
         }
     }
 
@@ -42,38 +44,48 @@ public class UserController {
 
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(200, "Profile found", users));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(500, "Internal Server Error"));
-
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(404, "User not found"));
         }
     }
 
     @PostMapping("/{userId}/follow/{followId}")
     public ResponseEntity<ApiResponse> followUser(@PathVariable Long userId, @PathVariable Long followId) {
+
+        if (userId.equals(followId)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(400, "User can not follow himself"));
+
+        }
+
         try {
             userService.followUser(userId, followId);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(201, "User followed successfully", null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(500, "Internal Server Error"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(404, "User not found"));
         }
     }
 
     @PostMapping("/{userId}/posts")
     public ResponseEntity<ApiResponse> createPost(@PathVariable Long userId, @Valid @RequestBody CreatePostRequest content) {
+
         try {
             userService.createPost(userId, content.getContent());
+
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(201, "Post created successfully", null));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(500, "Internal Server Error"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(404, "User not found"));
         }
     }
 
     @GetMapping("/{userId}/following/posts")
     public ResponseEntity<ApiResponse> getPostsFromFollowing(@PathVariable Long userId) {
+
         try {
             List<PostDTO> posts = userService.getPostsFromFollowing(userId);
+
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(200, "Posts found", posts));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(404, "User not found"));
         }
     }
 }

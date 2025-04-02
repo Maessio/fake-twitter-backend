@@ -1,9 +1,11 @@
 package com.app.faketwitter.service;
 
+import com.app.faketwitter.TokenUtils;
 import com.app.faketwitter.model.RevokedToken;
 import com.app.faketwitter.model.User;
 import com.app.faketwitter.repository.RevokedTokenRepository;
 import com.app.faketwitter.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,33 +13,47 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @Service
 public class LoginService {
-
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private RevokedTokenRepository revokedTokenRepository;
+    private TokenUtils tokenUtils;
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private RevokedTokenRepository revokedTokenRepository;
+
     @Transactional
-    public void logout(String token) throws Exception {
+    public boolean logout( HttpServletRequest request) throws Exception {
         try {
-            RevokedToken revokedToken = new RevokedToken();
-            revokedToken.setToken(token);
+            String token = tokenUtils.recoverToken(request);
 
-            revokedTokenRepository.save(revokedToken);
+            if (token.isBlank()) {
+                return false;
+            }
 
-            // To clear the client authorization after logout
-            SecurityContextHolder.clearContext();
+            RevokedToken revokedToken = tokenUtils.tokenRevoked(token);
 
+            if (revokedToken == null) {
+                revokedTokenRepository.save(new RevokedToken(token));
+
+                return true;
+            } else {
+                revokedTokenRepository.save(revokedToken);
+
+                return true;
+            }
         } catch (Exception e) {
             throw new Exception("Erro inesperado ao revogar o token", e);
         }
@@ -55,5 +71,6 @@ public class LoginService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
+
 }
 

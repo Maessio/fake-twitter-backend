@@ -1,4 +1,4 @@
-package com.app.faketwitter.services.unit;
+package com.app.faketwitter.unit.services;
 
 import com.app.faketwitter.model.User;
 import com.app.faketwitter.repository.UserRepository;

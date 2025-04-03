@@ -1,4 +1,4 @@
-package com.app.faketwitter.controllers;
+package com.app.faketwitter.unit.controllers;
 
 import com.app.faketwitter.controller.UserController;
 import com.app.faketwitter.dto.PostDTO;

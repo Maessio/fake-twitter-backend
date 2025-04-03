@@ -1,4 +1,4 @@
-package com.app.faketwitter.controllers;
+package com.app.faketwitter.unit.controllers;
 
 import com.app.faketwitter.config.TokenService;
 import com.app.faketwitter.controller.AuthController;

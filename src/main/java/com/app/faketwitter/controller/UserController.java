@@ -36,7 +36,7 @@ public class UserController {
     public ResponseEntity<ApiResponse> searchUsers(@RequestParam String userName) {
 
         try {
-            List<UserDTO> users = userService.searchUsers(userName);
+            List<UserDTO> users = userService.searchUsers(userName.toLowerCase().trim());
 
             if (users.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.success(200, "Profile not found", null));

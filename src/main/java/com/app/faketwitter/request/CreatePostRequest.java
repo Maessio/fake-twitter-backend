@@ -7,6 +7,11 @@ public class CreatePostRequest {
     @NotBlank(message = "Content is mandatory")
     private String content;
 
+    // Constructor
+    public CreatePostRequest(String content) {
+        this.content = content;
+    }
+
     // Getters and Setters
     public String getContent() {
         return content;

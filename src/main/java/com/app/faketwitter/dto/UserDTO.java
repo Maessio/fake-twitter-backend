@@ -15,6 +15,8 @@ public class UserDTO {
     private List<PostDTO> posts;
 
     // Constructor
+    public UserDTO() {
+    }
 
     public UserDTO(Long id, String userName, String email, int followersCount, int followingCount, List<PostDTO> posts) {
         this.id = id;

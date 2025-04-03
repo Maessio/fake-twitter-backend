@@ -4,7 +4,16 @@ public class ChangePasswordDTO {
     private String oldPassword;
     private String newPassword;
 
-    // Getters e Setters
+    // Constructor
+    public ChangePasswordDTO() {
+    }
+
+    public ChangePasswordDTO(String oldPassword, String newPassword) {
+        this.oldPassword = oldPassword;
+        this.newPassword = newPassword;
+    }
+
+    // Getters and Setters
     public String getOldPassword() {
         return oldPassword;
     }

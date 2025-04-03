@@ -1,4 +1,4 @@
-package com.app.faketwitter.response;
+package com.app.faketwitter.service;
 
 import com.app.faketwitter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,12 @@ public class AuthorizationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return repository.findByEmail(username);
+        UserDetails user = repository.findByEmail(username);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found" );
+        }
+
+        return user;
     }
 }

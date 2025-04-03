@@ -1,8 +1,7 @@
 package com.app.faketwitter.config;
 
-import com.app.faketwitter.TokenUtils;
+import com.app.faketwitter.utils.TokenUtils;
 import com.app.faketwitter.repository.UserRepository;
-import com.app.faketwitter.service.LoginService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

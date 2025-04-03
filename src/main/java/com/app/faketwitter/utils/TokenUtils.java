@@ -1,4 +1,4 @@
-package com.app.faketwitter;
+package com.app.faketwitter.utils;
 
 import com.app.faketwitter.model.RevokedToken;
 import com.app.faketwitter.repository.RevokedTokenRepository;

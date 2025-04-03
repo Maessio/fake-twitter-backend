@@ -1,6 +1,6 @@
 package com.app.faketwitter.service;
 
-import com.app.faketwitter.TokenUtils;
+import com.app.faketwitter.utils.TokenUtils;
 import com.app.faketwitter.model.RevokedToken;
 import com.app.faketwitter.model.User;
 import com.app.faketwitter.repository.RevokedTokenRepository;
@@ -9,11 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 
 @Service

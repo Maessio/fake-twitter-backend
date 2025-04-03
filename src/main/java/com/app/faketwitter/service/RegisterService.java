@@ -8,8 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class RegisterService {
 
@@ -31,8 +29,7 @@ public class RegisterService {
             throw new IllegalArgumentException("Email already in use");
         }
 
-        User user = new User(username,email, new BCryptPasswordEncoder().encode(password));
-
+        User user = new User(username, email, passwordEncoder.encode(password));
 
         return  userRepository.save(user) != null;
     }

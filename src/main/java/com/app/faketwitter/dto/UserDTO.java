@@ -8,7 +8,7 @@ import java.util.List;
 public class UserDTO {
 
     private Long id;
-    private String userName;
+    private String username;
     private String email;
     private int followersCount;
     private int followingCount;
@@ -18,18 +18,18 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String userName, String email, int followersCount, int followingCount, List<PostDTO> posts) {
+    public UserDTO(Long id, String username, String email, int followersCount, int followingCount, List<PostDTO> posts) {
         this.id = id;
-        this.userName = userName;
+        this.username = username;
         this.email = email;
         this.followersCount = followersCount;
         this.followingCount = followingCount;
         this.posts = posts;
     }
 
-    public UserDTO(Long id, String userName, String email) {
+    public UserDTO(Long id, String username, String email) {
         this.id = id;
-        this.userName = userName;
+        this.username = username;
         this.email = email;
     }
 
@@ -43,11 +43,11 @@ public class UserDTO {
     }
 
     public String getUserName() {
-        return userName;
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserName(String username) {
+        this.username = username;
     }
 
     public String getEmail() {

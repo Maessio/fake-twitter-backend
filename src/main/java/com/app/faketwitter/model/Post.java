@@ -19,6 +19,10 @@ public class Post {
 
 
     // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
     public String getContent() {
         return content;
     }

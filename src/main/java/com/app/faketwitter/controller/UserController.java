@@ -33,10 +33,14 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse> searchUsers(@RequestParam String userName) {
+    public ResponseEntity<ApiResponse> searchUsers(@RequestParam String username) {
+
+        if (username.isBlank()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(400, "User name cannot to be blank"));
+        }
 
         try {
-            List<UserDTO> users = userService.searchUsers(userName.toLowerCase().trim());
+            List<UserDTO> users = userService.searchUsers(username.toLowerCase().trim());
 
             if (users.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.success(200, "Profile not found", null));
@@ -52,8 +56,7 @@ public class UserController {
     public ResponseEntity<ApiResponse> followUser(@PathVariable Long userId, @PathVariable Long followId) {
 
         if (userId.equals(followId)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(400, "User can not follow himself"));
-
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(400, "User cannot follow themselves"));
         }
 
         try {
@@ -65,27 +68,6 @@ public class UserController {
         }
     }
 
-    @PostMapping("/{userId}/posts")
-    public ResponseEntity<ApiResponse> createPost(@PathVariable Long userId, @Valid @RequestBody CreatePostRequest content) {
 
-        try {
-            userService.createPost(userId, content.getContent());
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(201, "Post created successfully", null));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(404, "User not found"));
-        }
-    }
-
-    @GetMapping("/{userId}/following/posts")
-    public ResponseEntity<ApiResponse> getPostsFromFollowing(@PathVariable Long userId) {
-
-        try {
-            List<PostDTO> posts = userService.getPostsFromFollowing(userId);
-
-            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(200, "Posts found", posts));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(404, "User not found"));
-        }
-    }
 }

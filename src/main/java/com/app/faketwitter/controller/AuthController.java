@@ -5,11 +5,11 @@ import com.app.faketwitter.dto.AuthenticationDTO;
 import com.app.faketwitter.dto.ChangePasswordDTO;
 import com.app.faketwitter.dto.RegisterDTO;
 import com.app.faketwitter.model.User;
-import com.app.faketwitter.repository.UserRepository;
 import com.app.faketwitter.response.ApiResponse;
 import com.app.faketwitter.response.LoginResponse;
 import com.app.faketwitter.service.LoginService;
 import com.app.faketwitter.service.RegisterService;
+import com.app.faketwitter.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,19 +30,25 @@ public class AuthController {
     private RegisterService registerService;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private UserService userService;
 
     @Autowired
-    private UserRepository repository;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private TokenService tokenService;
 
     @PostMapping(value = "/register", consumes = "application/json", produces = "application/json")
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
+    public ResponseEntity<ApiResponse> register(@RequestBody @Valid RegisterDTO data){
 
         try {
             registerService.registerUser(data.username(), data.email(), data.password());
+
+            // fazer login ja no register, retornardo token para o front
+//            var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
+//            var auth = this.authenticationManager.authenticate(usernamePassword);
+//
+//            var token = tokenService.generateToken((User) auth.getPrincipal());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(201, "User registered successfully", null));
         } catch (IllegalArgumentException e) {
@@ -51,7 +57,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/login", consumes = "application/json", produces = "application/json")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
+    public ResponseEntity<ApiResponse> login(@RequestBody @Valid AuthenticationDTO data) {
 
         try {
             var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
@@ -59,7 +65,9 @@ public class AuthController {
 
             var token = tokenService.generateToken((User) auth.getPrincipal());
 
-            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(200, "Login successful", new LoginResponse(token)));
+            Long userId = userService.getUserId(data.email());
+
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(200, "Login successful", new LoginResponse(userId, token)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(400, "Invalid credentials"));
         }

@@ -2,6 +2,8 @@ package com.app.faketwitter.repository;
 
 import com.app.faketwitter.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +16,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
     List<User> findByUsernameContainingIgnoreCase(String query);
+
+    @Query("SELECT u.id FROM User u JOIN u.following f WHERE f.id = :userId")
+    List<Long> getFollowingIds(@Param("userId") Long userId);
 }
 

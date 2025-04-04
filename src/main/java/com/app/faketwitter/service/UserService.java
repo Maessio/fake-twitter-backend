@@ -7,12 +7,14 @@ import com.app.faketwitter.model.User;
 import com.app.faketwitter.repository.PostRepository;
 import com.app.faketwitter.repository.UserRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,11 +43,11 @@ public class UserService {
 
         List<Post> posts = postRepository.findByUser(user);
 
-        List<PostDTO> postDTOs = posts.stream()
-                .map(post -> new PostDTO(post.getContent(), post.getUser().getUsername()))
+        List<PostDTO> postDTO = posts.stream()
+                .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUser().getUsername()))
                 .collect(Collectors.toList());
 
-        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), followersCount, followingCount, postDTOs);
+        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), followersCount, followingCount, postDTO);
     }
 
     @Transactional
@@ -94,6 +96,30 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public Long getUserId(String email) {
+        UserDetails userDetails = userRepository.findByEmail(email);
+
+        if (userDetails instanceof User user) {
+            return user.getId();
+        }
+
+        throw new EntityNotFoundException("User not found");
+    }
+
+    public List<PostDTO> getRandomPosts(Long userId) {
+
+        List<Post> randomPosts = postRepository.findRandomPostsExcludingSelf(userId);
+
+        return randomPosts.stream()
+                .map(post -> new PostDTO(
+                        post.getContent(),
+                        post.getUser().getId(),
+                        post.getUser().getUsername()
+                ))
+                .collect(Collectors.toList());
+    }
+
+
     private int getFollowersCount(Long userId) {
         String qlString = "SELECT COUNT(u) FROM User u JOIN u.following f WHERE f.id = :userId";
         TypedQuery<Long> query = entityManager.createQuery(qlString, Long.class);
@@ -107,5 +133,4 @@ public class UserService {
         query.setParameter("userId", userId);
         return query.getSingleResult().intValue();
     }
-
 }

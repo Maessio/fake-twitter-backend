@@ -5,24 +5,37 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL) // Excludes null fields from serialization
 public class PostDTO {
 
+    private Long id;
     private Long userId;
-    private String userName;
+    private String username;
     private String content;
 
     // Constructor
-    public PostDTO(String content, Long userId, String userName) {
+    public PostDTO(String content, Long userId, String username) {
+        this.id = null;
         this.content = content;
         this.userId = userId;
-        this.userName = userName;
+        this.username = username;
     }
 
-    public PostDTO(String content, String userName) {
+    public PostDTO(Long id, String content, String username) {
+        this.id = id;
         this.content = content;
-        this.userName = userName;
-        this.userId = null; // userId será null caso não seja fornecido
+        this.username = username;
+        this.userId = null;
     }
 
     // Getters and Setters
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getUserId() {
         return userId;
     }
@@ -32,11 +45,11 @@ public class PostDTO {
     }
 
     public String getUserName() {
-        return userName;
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserName(String username) {
+        this.username = username;
     }
 
     public String getContent() {

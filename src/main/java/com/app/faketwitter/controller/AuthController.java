@@ -44,12 +44,6 @@ public class AuthController {
         try {
             registerService.registerUser(data.username(), data.email(), data.password());
 
-            // fazer login ja no register, retornardo token para o front
-//            var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
-//            var auth = this.authenticationManager.authenticate(usernamePassword);
-//
-//            var token = tokenService.generateToken((User) auth.getPrincipal());
-
             return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(201, "User registered successfully", null));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error(409, e.getMessage()));
@@ -85,7 +79,7 @@ public class AuthController {
         }
     }
 
-    @PutMapping("/{userId}/change-password")
+    @PutMapping("/change-password/{userId}")
     public ResponseEntity<ApiResponse> changePassword(
             @PathVariable Long userId,
             @RequestBody ChangePasswordDTO changePasswordDTO) {

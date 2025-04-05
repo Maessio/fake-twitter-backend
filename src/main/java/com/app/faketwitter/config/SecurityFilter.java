@@ -35,6 +35,12 @@ public class SecurityFilter extends OncePerRequestFilter {
             var email = tokenService.validateToken(token);
             UserDetails user = userRepository.findByEmail(email);
 
+            if (user == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("User not found.");
+                return;
+            }
+
             if (tokenUtils.tokenRevoked(token) != null) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Token has been revoked. Please log in again.");

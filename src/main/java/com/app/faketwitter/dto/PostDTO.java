@@ -11,6 +11,13 @@ public class PostDTO {
     private String content;
 
     // Constructor
+    public PostDTO(Long id, String content, Long userId, String username) {
+        this.id = id;
+        this.content = content;
+        this.userId = userId;
+        this.username = username;
+    }
+
     public PostDTO(String content, Long userId, String username) {
         this.id = null;
         this.content = content;
@@ -44,11 +51,11 @@ public class PostDTO {
         this.userId = userId;
     }
 
-    public String getUserName() {
+    public String getUsername() {
         return username;
     }
 
-    public void setUserName(String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 

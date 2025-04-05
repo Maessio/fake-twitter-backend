@@ -106,12 +106,13 @@ public class UserService {
         throw new EntityNotFoundException("User not found");
     }
 
-    public List<PostDTO> getRandomPosts(Long userId) {
+    public List<PostDTO> getRandomPosts() {
 
-        List<Post> randomPosts = postRepository.findRandomPostsExcludingSelf(userId);
+        List<Post> randomPosts = postRepository.findRandomPosts();
 
         return randomPosts.stream()
                 .map(post -> new PostDTO(
+                        post.getId(),
                         post.getContent(),
                         post.getUser().getId(),
                         post.getUser().getUsername()

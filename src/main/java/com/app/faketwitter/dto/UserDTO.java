@@ -14,6 +14,7 @@ public class UserDTO {
     private int followingCount;
     private List<PostDTO> posts;
     private boolean isFollowing;
+    private byte[] photo;
 
     // Constructor
     public UserDTO() {
@@ -24,13 +25,14 @@ public class UserDTO {
         this.username = username;
     }
 
-    public UserDTO(Long id, String username, String email, int followersCount, int followingCount, List<PostDTO> posts) {
+    public UserDTO(Long id, String username, String email, int followersCount, int followingCount, List<PostDTO> posts, byte[] photo) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.followersCount = followersCount;
         this.followingCount = followingCount;
         this.posts = posts;
+        this.photo = photo;
     }
 
     public UserDTO(Long id, String username, String email) {
@@ -94,5 +96,13 @@ public class UserDTO {
 
     public void setFollowing(boolean following) {
         isFollowing = following;
+    }
+
+    public byte[] getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
     }
 }

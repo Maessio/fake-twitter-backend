@@ -14,10 +14,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Base64;
 
 @RestController
 @RequestMapping("/auth")
@@ -38,15 +43,20 @@ public class AuthController {
     @Autowired
     private TokenService tokenService;
 
-    @PostMapping(value = "/register", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<ApiResponse> register(@RequestBody @Valid RegisterDTO data){
-
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse> register(
+            @RequestParam("username") String username,
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            @RequestParam("photo") MultipartFile photo
+    ) {
         try {
-            registerService.registerUser(data.username(), data.email(), data.password());
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(201, "User registered successfully", null));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error(409, e.getMessage()));
+            registerService.registerUser(username, email, password, photo);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(ApiResponse.success(201, "User registered successfully", null));
+        } catch (IllegalArgumentException | IOException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(ApiResponse.error(409, e.getMessage()));
         }
     }
 

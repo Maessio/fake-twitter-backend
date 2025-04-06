@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,7 +12,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-@NoArgsConstructor
 public class User implements UserDetails {
 
     @Id
@@ -21,6 +21,10 @@ public class User implements UserDetails {
     private String email;
     private String username;
     private String password;
+
+    @Lob
+    @Column(name = "photo")
+    private byte[] photo;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts;
@@ -33,10 +37,14 @@ public class User implements UserDetails {
 
 
     // Constructor
-    public User(String username, String email, String password) {
+    public User() {
+    }
+
+    public User(String username, String email, String password, byte[] photo) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.photo = photo;
     }
 
     // Getters and Setters
@@ -95,6 +103,14 @@ public class User implements UserDetails {
 
     public void setFollowers(Set<User> followers) {
         this.followers = followers;
+    }
+
+    public byte[] getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
     }
 
     //Methods

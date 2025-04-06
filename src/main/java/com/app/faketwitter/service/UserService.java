@@ -49,7 +49,7 @@ public class UserService {
                 .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUser().getUsername()))
                 .collect(Collectors.toList());
 
-        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), followersCount, followingCount, postDTO);
+        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), followersCount, followingCount, postDTO, user.getPhoto());
     }
 
     @Transactional

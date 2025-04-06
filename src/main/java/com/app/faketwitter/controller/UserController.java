@@ -4,10 +4,14 @@ import com.app.faketwitter.dto.UserDTO;
 import com.app.faketwitter.response.ApiResponse;
 import com.app.faketwitter.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.net.URLConnection;
 import java.util.List;
 
 @RestController
@@ -39,6 +43,8 @@ public class UserController {
                 user.setFollowing(isFollowing);
             }
 
+            user.setPhoto(null);
+
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponse.success(200, "Profile found", user));
         } catch (Exception e) {
@@ -47,6 +53,20 @@ public class UserController {
         }
     }
 
+    @GetMapping("/{userId}/photo")
+    public ResponseEntity<byte[]> getUserPhoto(@PathVariable Long userId) throws Exception {
+        UserDTO userDTO = userService.getUserProfile(userId);
+
+        byte[] image = userDTO.getPhoto();
+
+        HttpHeaders headers = new HttpHeaders();
+
+        String contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(image));
+
+        headers.setContentType(MediaType.parseMediaType(contentType));
+
+        return new ResponseEntity<>(image, headers, HttpStatus.OK);
+    }
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse> searchUsers(@RequestParam String username) {

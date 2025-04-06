@@ -88,29 +88,6 @@ public class UserService {
         return user;
     }
 
-
-    @Transactional
-    public void createPost(Long userId, String content) throws Exception {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new Exception("User not found"));
-
-        Post post = new Post();
-        post.setContent(content);
-        post.setUser(user);
-
-        postRepository.save(post);
-    }
-
-    @Transactional
-    public List<PostDTO> getPostsFromFollowing(Long userId) throws Exception {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new Exception("User not found"));
-
-        List<Post> posts = postRepository.findByUserIn(user.getFollowing());
-
-        return posts.stream().map(post -> new PostDTO(post.getContent(), post.getUser().getId(), post.getUser().getUsername())).toList();
-    }
-
     public List<UserDTO> searchUsers(String query) {
         List<User> users = userRepository.findTop5ByUsernameContainingIgnoreCase(query);
 
@@ -129,20 +106,6 @@ public class UserService {
         throw new EntityNotFoundException("User not found");
     }
 
-    public List<PostDTO> getRandomPosts() {
-
-        List<Post> randomPosts = postRepository.findRandomPosts();
-
-        return randomPosts.stream()
-                .map(post -> new PostDTO(
-                        post.getId(),
-                        post.getContent(),
-                        post.getUser().getId(),
-                        post.getUser().getUsername()
-                ))
-                .collect(Collectors.toList());
-    }
-
     public boolean isFollowing(Long currentUserId, Long targetUserId) throws Exception {
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new Exception("Current user not found"));
@@ -152,7 +115,6 @@ public class UserService {
 
         return currentUser.getFollowing().contains(targetUser);
     }
-
 
     private int getFollowersCount(Long userId) {
         String qlString = "SELECT COUNT(u) FROM User u JOIN u.following f WHERE f.id = :userId";

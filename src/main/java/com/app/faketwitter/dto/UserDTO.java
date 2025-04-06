@@ -13,9 +13,15 @@ public class UserDTO {
     private int followersCount;
     private int followingCount;
     private List<PostDTO> posts;
+    private boolean isFollowing;
 
     // Constructor
     public UserDTO() {
+    }
+
+    public UserDTO(Long id, String username) {
+        this.id = id;
+        this.username = username;
     }
 
     public UserDTO(Long id, String username, String email, int followersCount, int followingCount, List<PostDTO> posts) {
@@ -80,5 +86,13 @@ public class UserDTO {
 
     public void setPosts(List<PostDTO> postDTO) {
         this.posts = postDTO;
+    }
+
+    public boolean isFollowing() {
+        return isFollowing;
+    }
+
+    public void setFollowing(boolean following) {
+        isFollowing = following;
     }
 }

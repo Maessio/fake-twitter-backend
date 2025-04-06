@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     UserDetails findByEmail(String email);
     Optional<User> findByUsername(String username);
 
-    List<User> findByUsernameContainingIgnoreCase(String query);
+    List<User> findTop5ByUsernameContainingIgnoreCase(String query);
 
     @Query("SELECT u.id FROM User u JOIN u.following f WHERE f.id = :userId")
     List<Long> getFollowingIds(@Param("userId") Long userId);

@@ -1,11 +1,8 @@
 package com.app.faketwitter.controller;
 
-import com.app.faketwitter.dto.PostDTO;
 import com.app.faketwitter.dto.UserDTO;
-import com.app.faketwitter.request.CreatePostRequest;
 import com.app.faketwitter.response.ApiResponse;
 import com.app.faketwitter.service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,17 +17,36 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponse> getUserProfile(@PathVariable Long userId) {
+    @GetMapping("/{currentUserId}")
+    public ResponseEntity<ApiResponse> getUserProfile(
+            @PathVariable Long currentUserId,
+            @RequestParam(value = "userId", required = false) Long targetUserId) {
 
         try {
-            UserDTO user = userService.getUserProfile(userId);
+            UserDTO user;
 
-            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(200, "Profile found", user));
+            if (targetUserId == null) {
+                user = userService.getUserProfile(currentUserId);
+            } else {
+
+                if (currentUserId.equals(targetUserId)) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(ApiResponse.error(400, "Users cannot search themselves"));
+                }
+
+                user = userService.getUserProfile(targetUserId);
+                boolean isFollowing = userService.isFollowing(currentUserId, targetUserId);
+                user.setFollowing(isFollowing);
+            }
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ApiResponse.success(200, "Profile found", user));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(404, "User not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(404, "User not found"));
         }
     }
+
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse> searchUsers(@RequestParam String username) {
@@ -68,6 +84,23 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/{userId}/unfollow/{followId}")
+    public ResponseEntity<ApiResponse> unfollowUser(@PathVariable Long userId, @PathVariable Long followId) {
+
+        if (userId.equals(followId)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error(400, "User cannot unfollow themselves"));
+        }
+
+        try {
+            userService.unfollowUser(userId, followId);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ApiResponse.success(200, "User unfollowed successfully", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(404, "User not found"));
+        }
+    }
 
 
 }

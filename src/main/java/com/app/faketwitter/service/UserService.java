@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,7 @@ public class UserService {
         List<Post> posts = postRepository.findByUser(user);
 
         List<PostDTO> postDTO = posts.stream()
+                .sorted(Comparator.comparing(Post::getId).reversed())
                 .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUser().getUsername()))
                 .collect(Collectors.toList());
 
@@ -57,6 +59,10 @@ public class UserService {
         User toFollow = userRepository.findById(followId)
                 .orElseThrow(() -> new Exception("User to follow not found"));
 
+        if (user.getFollowing().contains(toFollow)) {
+            throw new Exception("User is already following the target user");
+        }
+
         user.getFollowing().add(toFollow);
         toFollow.getFollowers().add(user);
 
@@ -65,6 +71,23 @@ public class UserService {
 
         return user;
     }
+
+    @Transactional
+    public User unfollowUser(Long userId, Long followId) throws Exception {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new Exception("User not found"));
+        User toUnfollow = userRepository.findById(followId)
+                .orElseThrow(() -> new Exception("User to unfollow not found"));
+
+        user.getFollowing().remove(toUnfollow);
+        toUnfollow.getFollowers().remove(user);
+
+        userRepository.save(user);
+        userRepository.save(toUnfollow);
+
+        return user;
+    }
+
 
     @Transactional
     public void createPost(Long userId, String content) throws Exception {
@@ -89,10 +112,10 @@ public class UserService {
     }
 
     public List<UserDTO> searchUsers(String query) {
-        List<User> users = userRepository.findByUsernameContainingIgnoreCase(query);
+        List<User> users = userRepository.findTop5ByUsernameContainingIgnoreCase(query);
 
         return users.stream()
-                .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getEmail()))
+                .map(user -> new UserDTO(user.getId(), user.getUsername()))
                 .collect(Collectors.toList());
     }
 
@@ -118,6 +141,16 @@ public class UserService {
                         post.getUser().getUsername()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public boolean isFollowing(Long currentUserId, Long targetUserId) throws Exception {
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new Exception("Current user not found"));
+
+        User targetUser = userRepository.findById(targetUserId)
+                .orElseThrow(() -> new Exception("Target user not found"));
+
+        return currentUser.getFollowing().contains(targetUser);
     }
 
 

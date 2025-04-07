@@ -1,0 +1,39 @@
+# Ignore arquivos gerados pelo Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Arquivos de configuração do Spring Tools Suite (STS)
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans/
+.sts4-cache/
+
+# Arquivos de configuração do IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Arquivos do NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Build (para evitar arquivos gerados)
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Configurações do VS Code
+.vscode/
+
+# Credenciais sensíveis (garanta que application.properties não seja versionado se contiver senhas)
+application.properties
+

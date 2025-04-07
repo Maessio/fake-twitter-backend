@@ -13,7 +13,7 @@ public class CustomCorsConfigurer implements Customizer<CorsConfigurer<HttpSecur
     @Override
     public void customize(CorsConfigurer<HttpSecurity> corsConfigurer) {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedOrigins(List.of("http://localhost:4200", "http://d7l04ahhf47jz.cloudfront.net"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Authorization"));

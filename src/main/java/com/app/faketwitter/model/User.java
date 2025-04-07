@@ -11,7 +11,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-@NoArgsConstructor
 public class User implements UserDetails {
 
     @Id
@@ -33,6 +32,9 @@ public class User implements UserDetails {
 
 
     // Constructor
+    public User() {
+    }
+
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;

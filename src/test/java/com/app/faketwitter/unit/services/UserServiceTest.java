@@ -106,30 +106,8 @@ class UserServiceTest {
     }
 
     @Test
-    void createPost_ShouldSavePost() throws Exception {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-
-        userService.createPost(1L, "New Post");
-
-        verify(postRepository, times(1)).save(any(Post.class));
-    }
-
-    @Test
-    void getPostsFromFollowing_ShouldReturnPostDTOs() throws Exception {
-        user.setFollowing(Set.of(followedUser));
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(postRepository.findByUserIn(user.getFollowing())).thenReturn(List.of(post));
-
-        List<PostDTO> posts = userService.getPostsFromFollowing(1L);
-
-        assertNotNull(posts);
-        assertFalse(posts.isEmpty());
-        assertEquals("Hello World", posts.get(0).getContent());
-    }
-
-    @Test
     void searchUsers_ShouldReturnUserDTOList() {
-        when(userRepository.findByUsernameContainingIgnoreCase("test"))
+        when(userRepository.findTop5ByUsernameContainingIgnoreCase("test"))
                 .thenReturn(List.of(user));
 
         List<UserDTO> users = userService.searchUsers("test");

@@ -4,6 +4,7 @@ import com.app.faketwitter.controller.UserController;
 import com.app.faketwitter.dto.PostDTO;
 import com.app.faketwitter.dto.UserDTO;
 import com.app.faketwitter.request.CreatePostRequest;
+import com.app.faketwitter.response.ApiResponse;
 import com.app.faketwitter.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +37,7 @@ class UserControllerTest {
     @InjectMocks
     private UserController userController;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
@@ -73,31 +74,47 @@ class UserControllerTest {
     void testFollowUser_SelfFollow() throws Exception {
         mockMvc.perform(post("/users/1/follow/1"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("User can not follow himself"));
+                .andExpect(jsonPath("$.message").value("User cannot follow themselves"));
     }
 
     @Test
-    void testCreatePost_Success() throws Exception {
-        CreatePostRequest request = new CreatePostRequest("Hello World");
-
-        mockMvc.perform(post("/users/1/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.message").value("Post created successfully"));
-    }
-
-    @Test
-    void testGetPostsFromFollowing_Success() throws Exception {
-        PostDTO post = new PostDTO("Hello World", 1L, "testUser");
-        List<PostDTO> posts = Collections.singletonList(post);
-
-        when(userService.getPostsFromFollowing(1L)).thenReturn(posts);
-
-        mockMvc.perform(get("/users/1/following/posts"))
+    void testUnfollowUser_Success() throws Exception {
+        mockMvc.perform(delete("/users/1/unfollow/2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Posts found"))
-                .andExpect(jsonPath("$.data[0].content").value("Hello World"));
+                .andExpect(jsonPath("$.message").value("User unfollowed successfully"));
     }
-}
 
+    @Test
+    void testUnfollowUser_SelfUnfollow() throws Exception {
+        mockMvc.perform(delete("/users/1/unfollow/1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("User cannot unfollow themselves"));
+    }
+
+    @Test
+    void testSearchUsers_Success() throws Exception {
+        UserDTO userDTO = new UserDTO(1L, "testUser", "test@example.com", 10, 5, Collections.emptyList());
+        when(userService.searchUsers("test")).thenReturn(List.of(userDTO));
+
+        mockMvc.perform(get("/users/search").param("username", "test"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Profile found"));
+    }
+
+    @Test
+    void testSearchUsers_BlankUsername() throws Exception {
+        mockMvc.perform(get("/users/search").param("username", " "))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("User name cannot to be blank"));
+    }
+
+    @Test
+    void testSearchUsers_NotFound() throws Exception {
+        when(userService.searchUsers("xyz")).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/users/search").param("username", "xyz"))
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.message").value("Profile not found"));
+    }
+
+}

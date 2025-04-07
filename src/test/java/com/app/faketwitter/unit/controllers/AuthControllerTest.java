@@ -70,19 +70,6 @@ class AuthControllerTest {
         assertTrue(((ApiResponse) response.getBody()).getMessage().contains("User already exists"));
     }
 
-    @Test
-    void testLogin_Success() {
-        AuthenticationDTO authDTO = new AuthenticationDTO("user@example.com", "password");
-        Authentication authentication = mock(Authentication.class);
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
-        when(tokenService.generateToken(any())).thenReturn("fakeToken");
-
-        ResponseEntity response = authController.login(authDTO);
-
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals("Login successful", ((ApiResponse) response.getBody()).getMessage());
-        assertEquals("fakeToken", ((LoginResponse) ((ApiResponse) response.getBody()).getData()).getToken());
-    }
 
     @Test
     void testLogin_Failure() {

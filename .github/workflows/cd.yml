@@ -32,7 +32,7 @@ jobs:
       - name: Atualizar serviço no ECS
         run: |
           aws ecs update-service \
-            --cluster FakeTwitterStack-FakeTwitterCluster39D9425E-m0BSq5SF0VBO \
-            --service FakeTwitterStack-BackendService2147DAF9-DzH0kPLb14Vn \
+            --cluster FakeTwitterStack-FakeTwitterCluster39D9425E-fmmoeB5DO5bZ \
+            --service FakeTwitterStack-BackendService2147DAF9-VGzsL6SbiVNi \
             --force-new-deployment
 

@@ -52,7 +52,7 @@ public class LoginService {
                 return true;
             }
         } catch (Exception e) {
-            throw new Exception("Erro inesperado ao revogar o token", e);
+            throw new Exception("Error to revoke token", e);
         }
     }
 

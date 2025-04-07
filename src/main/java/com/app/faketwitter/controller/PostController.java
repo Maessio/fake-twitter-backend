@@ -53,6 +53,7 @@ public class PostController {
     public ResponseEntity<ApiResponse> getPostsFromFollowing(@PathVariable Long userId) {
 
         try {
+
             List<PostDTO> posts = postService.getPostsFromFollowing(userId);
 
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(200, "Posts found", posts));

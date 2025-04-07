@@ -57,6 +57,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse> login(@RequestBody @Valid AuthenticationDTO data) {
 
         try {
+
             var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
             var auth = this.authenticationManager.authenticate(usernamePassword);
 

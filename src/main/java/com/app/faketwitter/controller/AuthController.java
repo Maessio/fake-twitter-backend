@@ -23,20 +23,23 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private LoginService loginService;
+    private final LoginService loginService;
 
-    @Autowired
-    private RegisterService registerService;
+    private final RegisterService registerService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private TokenService tokenService;
+    private final TokenService tokenService;
+    
+    public AuthController(LoginService loginService, RegisterService registerService, UserService userService, AuthenticationManager authenticationManager, TokenService tokenService) {
+        this.loginService = loginService;
+        this.registerService = registerService;
+        this.userService = userService;
+        this.authenticationManager = authenticationManager;
+        this.tokenService = tokenService;
+    }
 
     @PostMapping(value = "/register", consumes = "application/json", produces = "application/json")
     public ResponseEntity<ApiResponse> register(@RequestBody @Valid RegisterDTO data){

@@ -32,7 +32,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
 
     private final TokenService tokenService;
-    
+
     public AuthController(LoginService loginService, RegisterService registerService, UserService userService, AuthenticationManager authenticationManager, TokenService tokenService) {
         this.loginService = loginService;
         this.registerService = registerService;

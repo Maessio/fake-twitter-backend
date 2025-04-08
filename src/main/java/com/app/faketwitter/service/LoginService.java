@@ -57,7 +57,7 @@ public class LoginService {
     }
 
     @Transactional
-    public void changePassword(Long userId, String oldPassword, String newPassword) throws Exception {
+    public boolean changePassword(Long userId, String oldPassword, String newPassword) throws Exception {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new Exception("User not found"));
 
@@ -67,7 +67,9 @@ public class LoginService {
 
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+        return true;
     }
+
 
 }
 

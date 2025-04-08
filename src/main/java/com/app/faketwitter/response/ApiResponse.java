@@ -24,6 +24,19 @@ public class ApiResponse {
         this.data = data;
     }
 
+    // Getters
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
     // Methods
     public static ApiResponse success(int statusCode, String message, Object data) {
         return new ApiResponse(statusCode, message, data);

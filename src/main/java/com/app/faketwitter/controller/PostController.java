@@ -4,7 +4,6 @@ import com.app.faketwitter.dto.PostDTO;
 import com.app.faketwitter.request.CreatePostRequest;
 import com.app.faketwitter.response.ApiResponse;
 import com.app.faketwitter.service.PostService;
-import com.app.faketwitter.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +52,7 @@ public class PostController {
     public ResponseEntity<ApiResponse> getPostsFromFollowing(@PathVariable Long userId) {
 
         try {
+
             List<PostDTO> posts = postService.getPostsFromFollowing(userId);
 
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(200, "Posts found", posts));

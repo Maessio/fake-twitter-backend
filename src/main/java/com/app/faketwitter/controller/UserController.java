@@ -25,6 +25,7 @@ public class UserController {
         try {
             UserDTO user;
 
+            // If no target user is provided, the logged-in user will be loaded
             if (targetUserId == null) {
                 user = userService.getUserProfile(currentUserId);
             } else {
@@ -35,6 +36,8 @@ public class UserController {
                 }
 
                 user = userService.getUserProfile(targetUserId);
+
+                // Set a boolean true if target user is following logged-in user
                 boolean isFollowing = userService.isFollowing(currentUserId, targetUserId);
                 user.setFollowing(isFollowing);
             }

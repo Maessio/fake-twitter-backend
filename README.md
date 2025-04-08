@@ -34,8 +34,6 @@ Swagger provides an easy-to-use interface to test all available API endpoints di
 
 ### Insomnia Collection
 
-A collection for testing the Fake Twitter API is available in the root directory of the project. The file is named **FakeTwitterCollection**. You can import this collection into **Insomnia** to interact with the backend API and test various endpoints (including authentication and CRUD operations).
-
 To import the collection in **Insomnia**:
 1. Open Insomnia.
 2. Click on the "Import" button in the top left.
@@ -44,15 +42,9 @@ To import the collection in **Insomnia**:
 
 ### Additional Commands
 
-#### Clone the Repository
-Clone the repository to your local machine.
-
 #### Install Dependencies
-Ensure that you have **Maven** or **Gradle** installed. Once the repository is cloned, navigate to the project directory and use the following command to install dependencies:
 
 mvn clean install
-
-This will install all necessary dependencies listed in the `pom.xml` (for Maven).
 
 #### Run the Project
 After the dependencies are installed, start the Spring Boot application by running the following command:
